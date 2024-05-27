@@ -8,6 +8,36 @@ enum Status {
     Done,
 }
 
+#[derive(thiserror::Error, Debug)]
+enum StatusError {
+    #[error("Invalid status")]
+    Invalid
+}
+
+impl TryFrom<String> for Status {
+    type Error = StatusError;
+
+    fn try_from(value: String) -> Result<Self, StatusError> {
+        value.as_str().try_into()
+    }
+}
+
+impl TryFrom<&str> for Status {
+    type Error = StatusError;
+
+    fn try_from(value: &str) -> Result<Self, StatusError> {
+        if value.to_lowercase() == "todo" {
+            Ok(Self::ToDo)
+        } else if value.to_lowercase() == "inprogress" {
+            Ok(Self::InProgress)
+        } else if value.to_lowercase() == "done" {
+            Ok(Self::Done)
+        } else {
+            Err(StatusError::Invalid)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
