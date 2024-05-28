@@ -58,6 +58,22 @@ impl TicketStore {
     }
 }
 
+impl std::ops::Index<TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, index: TicketId) -> &Self::Output {
+        &self[&index]
+    }
+}
+
+impl std::ops::Index<&TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, index: &TicketId) -> &Self::Output {
+        self.tickets.iter().find(|&t| t.id == *index).unwrap()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{Status, TicketDraft, TicketStore};
